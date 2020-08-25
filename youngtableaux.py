@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
-import warnings
+# import warnings
 
 def _kmin(p):
     N = len(p) + 1
@@ -19,7 +19,7 @@ def nonzero_p(p):
         p = np.asarray(p)
     return np.where(p != 0)[0]
 
-def fj(p, i, l1, l2):
+def _fj(p, i, l1, l2):
     N = len(p) + 1
     f = np.zeros(N+1)
     f[1:-1] = p
@@ -50,6 +50,10 @@ def l_pair(p, i):
     return l1, l2
 
 def Nality(p):
+    try:
+        assert type(p) == np.ndarray
+    except AssertionError:
+        p = np.asarray(p)
     N = len(p) + 1
     j = np.linspace(1, N-1, N-1, dtype = int)
     return np.sum(j * p) % N
@@ -62,11 +66,28 @@ def kmin(p):
 
     _N = len(p) + 1
     _i = _N - Nality(p)
-    _fj = np.array([])
+    _fj_arr = np.array([])
     if _i == _N:
-        warnings.warn("p has N-ality 0, meaning Q_i must be trivial.")
-        _fj = p
+        print("Warning: p has N-ality 0, meaning Q_i must be trivial.")
+        _fj_arr = p
     else:
         _l1, _l2 = l_pair(p, _i)
-        _fj = fj(p, _i, _l1, _l2)
-    return _kmin(_fj)
+        _fj_arr = _fj(p, _i, _l1, _l2)
+    return _kmin(_fj_arr)
+
+def fj(p):
+    try:
+        assert type(p) == np.ndarray
+    except AssertionError:
+        p = np.asarray(p)
+
+    _N = len(p) + 1
+    _i = _N - Nality(p)
+    _fj_arr = np.array([])
+    if _i == _N:
+        print("Warning: p has N-ality 0, meaning Q_i must be trivial.")
+        _fj_arr = p
+    else:
+        _l1, _l2 = l_pair(p, _i)
+        _fj_arr = _fj(p, _i, _l1, _l2)
+    return _fj_arr
