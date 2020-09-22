@@ -1,4 +1,4 @@
-name: tesselation-environment
+name:         tesselation-environment
 channels:
   - conda-forge
 dependencies:
